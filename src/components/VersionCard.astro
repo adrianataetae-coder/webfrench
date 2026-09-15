@@ -12,7 +12,8 @@ interface Props {
 
 const { version, audioBase, phraseNum, level, isOpen = false } = Astro.props;
 
-const audioSrc = `${audioBase}/frase${phraseNum}_${version.name}.mp3`;
+const base = import.meta.env.BASE_URL;
+const audioSrc = `${base}${audioBase}/frase${phraseNum}_${version.name}.mp3`;
 
 const tagColors: Record<string, { bg: string; text: string }> = {
   base: { bg: '#eef2ff', text: '#4338ca' },
@@ -139,7 +140,7 @@ const sParts = splitFrEs(version.substitution);
   .version-trigger {
     width: 100%;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 8px;
     padding: 13px 14px;
     background: white;
@@ -149,7 +150,7 @@ const sParts = splitFrEs(version.substitution);
     text-align: left;
     transition: background 0.12s;
     min-height: 48px;
-    overflow: hidden;
+    flex-wrap: wrap;
   }
   .version--open .version-trigger {
     background: #f5f3ff;
@@ -177,13 +178,9 @@ const sParts = splitFrEs(version.substitution);
     font-style: italic;
     font-size: 1.18rem;
     color: var(--text);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
   .version-audio-inline {
     flex-shrink: 0;
-    margin-left: auto;
   }
   .version-toggle {
     color: var(--text-muted);
