@@ -1,0 +1,492 @@
+---
+interface Props {
+  level: 'a1' | 'a2' | 'b1';
+}
+
+const { level } = Astro.props;
+
+const grammar: Record<string, {
+  title: string;
+  subtitle: string;
+  intro: string;
+  accent: string;
+  accentLight: string;
+  structures: {
+    name: string;
+    tag: string;
+    tagColor: string;
+    tagBg: string;
+    what: string;
+    how: string;
+    example: { fr: string; es: string };
+    tip: string;
+  }[];
+  tips: { title: string; text: string }[];
+}> = {
+  a1: {
+    title: 'Presente de Indicativo',
+    subtitle: 'Las 5 versiones de cada frase',
+    intro: 'Cada frase aparece en 5 registros diferentes. Esto te entrena para entender el francés real.',
+    accent: '#2d9f6f',
+    accentLight: '#dcfce7',
+    structures: [
+      {
+        name: 'Versión Base',
+        tag: 'BASE',
+        tagColor: '#4338ca',
+        tagBg: '#eef2ff',
+        what: 'La forma neutra y más común. Es la que usarás el 80% del tiempo.',
+        how: 'Sujeto + Verbo conjugado en presente + complementos.\n\nJe parle, tu parles, il parle, nous parlons, vous parlez, ils parlent.\n\nLos verbos -ER son los más frecuentes: parler, manger, aller, faire.',
+        example: { fr: 'Je vais dans la salle de bains pour me brosser les dents.', es: 'Voy al baño para cepillarme los dientes.' },
+        tip: 'Es tu punto de referencia. Compárala con las demás para ver qué cambia.',
+      },
+      {
+        name: 'Real Talk',
+        tag: 'REAL TALK',
+        tagColor: '#b45309',
+        tagBg: '#fef3c7',
+        what: 'El francés coloquial. Más corto, más directo, con argot y expresiones cotidianas.',
+        how: 'Cambios típicos:\n• "Salle de bains" → "les chiottes"\n• "Je vais" → "Je trace"\n• Muletillas: "ou quoi ?", "genre", "quand même"\n• Contracciones: "Je suis" → "Chui"',
+        example: { fr: 'Je trace aux chiottes pour me laver les ratiches direct.', es: 'Me largo al baño para lavarme los dientes de una vez.' },
+        tip: 'No la uses en exámenes. Pero es essential para entender series y conversaciones reales.',
+      },
+      {
+        name: 'Estilo Indirecto',
+        tag: 'INDIRECTO',
+        tagColor: '#0369a1',
+        tagBg: '#e0f2fe',
+        what: 'Reportar lo que alguien dijo, sin comillas. Equivale a "Él dijo que..." en español.',
+        how: 'Verbo de decir (passé composé) + que + verbo en presente.\n\nIl a dit que + je vais, tu vas, il va...\n\n"Que" se contrae a "qu\'" antes de vocal:\nIl a dit qu\'il va venir.',
+        example: { fr: 'Il a dit que je vais dans la salle de bains pour me brosser les dents.', es: 'Él dijo que voy al baño para cepillarme los dientes.' },
+        tip: 'Observa cómo el verbo reportado mantiene el mismo tiempo que en la versión base.',
+      },
+      {
+        name: 'Indirecto + Énfasis',
+        tag: 'ÉNFASIS',
+        tagColor: '#be185d',
+        tagBg: '#fdf2f8',
+        what: 'Igual que el indirecto, pero destacando quién realiza la acción con "c\'est... qui".',
+        how: 'Il a dit que c\'est + SUJETO + qui/que + verbo.\n\nC\'est moi qui vais...\nC\'est toi qui vas...\n\n"Qui" va antes de sujetos, "que" antes de objetos.',
+        example: { fr: 'Il a dit que c\'est moi qui vais dans la salle de bains.', es: 'Él dijo que soy yo quien va al baño.' },
+        tip: 'En spoken French se omite "que": "C\'est moi qui vais..." sin "Il a dit que".',
+      },
+      {
+        name: 'Voz Pasiva',
+        tag: 'PASIVA',
+        tagColor: '#0d9488',
+        tagBg: '#f0fdfa',
+        what: 'El sujeto recibe la acción en vez de realizarla. Suena más formal y objetivo.',
+        how: 'Sujeto + être (conjugado) + participio pasado + par + agente.\n\nLa salle de bains est visitée par moi.\n\nEl participio concuerda en género y número:\nvisitée (fem.), visité (masc.).',
+        example: { fr: 'La salle de bains est visitée par moi pour me brosser les dents.', es: 'El baño es visitado por mí para cepillarme los dientes.' },
+        tip: 'Si el agente es obvio, se omite "par": La porte est fermée. (La puerta está cerrada).',
+      },
+    ],
+    tips: [
+      { title: 'Vocabulario Real', text: 'La Real Talk usa las mismas reglas gramaticales, solo cambia el vocabulario y las expresiones.' },
+      { title: 'Indirecto Siempre', text: '"Que" siempre sigue al verbo de decir: a dit que, dit que, affirme que...' },
+      { title: 'C\'est... qui es versátil', text: 'Funciona en todos los tiempos verbales, no solo en presente.' },
+    ],
+  },
+  a2: {
+    title: 'Passé Composé e Imparfait',
+    subtitle: 'Las 5 versiones de cada frase',
+    intro: 'En el nivel A2 contamos en el pasado. Cada frase combina acciones puntuales (PC) con contexto (Imparfait).',
+    accent: '#3b82f6',
+    accentLight: '#dbeafe',
+    structures: [
+      {
+        name: 'Versión Base',
+        tag: 'BASE',
+        tagColor: '#4338ca',
+        tagBg: '#eef2ff',
+        what: 'Forma estándar de narrar en el pasado. Combina Passé Composé e Imparfait.',
+        how: 'Passé Composé: avoir/être (passé comp.) + participio pasado.\nJ\'ai mangé. Je suis allé.\n\nImparfait: raíz nous + -ais, -ais, -ait, -ions, -iez, -aient.\nJe parlais. Il faisait beau.\n\nRegla: ¿Inicio y fin claros? → PC. ¿De fondo/contexto? → Imp.',
+        example: { fr: 'Je suis entré dans la salle de bains pour prendre une douche rapide.', es: 'Entré al baño para tomar una ducha rápida.' },
+        tip: 'Muchas frases combinan ambos: "Il faisait froid quand je suis sorti."',
+      },
+      {
+        name: 'Real Talk',
+        tag: 'REAL TALK',
+        tagColor: '#b45309',
+        tagBg: '#fef3c7',
+        what: 'El pasado coloquial. Más expresivo, con contracciones, muletillas y verbos slang.',
+        how: 'Cambios comunes:\n• "Je suis allé" → "J\'y suis allé"\n• "Il a dit que" → "Il a dit genre que"\n• "C\'était bien" → "C\'était trop bien"\n• "Se doucher" → "Se taper une douche"',
+        example: { fr: 'Je me suis jeté aux chiottes pour me faire une douche express direct.', es: 'Me lancé al baño para echarme una ducha exprés de golpe.' },
+        tip: '"Genre" es la muletilla francesa por excelencia, como "como" o "tipo" en español.',
+      },
+      {
+        name: 'Estilo Indirecto',
+        tag: 'INDIRECTO',
+        tagColor: '#0369a1',
+        tagBg: '#e0f2fe',
+        what: 'Reportar en el pasado lo que alguien dijo. El verbo se adapta al tiempo correspondiente.',
+        how: 'Il a dit que + verbo en tiempo correspondiente.\n\nSi el evento fue puntual: passé composé.\nSi era habitual: imparfait.\n\n"Il a dit que je suis allé" (puntual).\n"Il a dit que je parlais bien" (descripción).',
+        example: { fr: 'Il a dit que je suis entré dans la salle de bains pour prendre une douche.', es: 'Él dijo que entré al baño para tomar una ducha.' },
+        tip: 'El passé composé se mantiene en el estilo indirecto, no cambia a plus-que-parfait.',
+      },
+      {
+        name: 'Indirecto + Énfasis',
+        tag: 'ÉNFASIS',
+        tagColor: '#be185d',
+        tagBg: '#fdf2f8',
+        what: 'Igual que el indirecto, pero destacando quién hizo la acción con "c\'est... qui".',
+        how: 'Il a dit que c\'est + SUJETO + qui/que + passé composé.\n\nC\'est moi qui suis entré.\n\nEl verbo concuerda con el sujeto:\nmoi → suis, toi → es, lui → est.',
+        example: { fr: 'Il a dit que c\'est moi qui suis entré dans la salle de bains.', es: 'Él dijo que fui yo quien entró al baño.' },
+        tip: 'Negativa: "Ce n\'est pas moi qui suis entré." (No fui yo).',
+      },
+      {
+        name: 'Voz Pasiva (Pasado)',
+        tag: 'PASIVA',
+        tagColor: '#0d9488',
+        tagBg: '#f0fdfa',
+        what: 'La voz pasiva en pasado. El sujeto recibe la acción y el agente va con "par".',
+        how: 'Sujeto + être (passé comp.) + participio pasado + par + agente.\n\nLa salle de bains a été visitée par moi.\n\nEl participio concuerda:\nvisitée (fem.), visité (masc.).',
+        example: { fr: 'La salle de bains a été entrée par moi pour me doucher.', es: 'El baño fue usado por mí para ducharme.' },
+        tip: 'Poco frecuente en conversación. Se prefiere la voz activa en oral.',
+      },
+    ],
+    tips: [
+      { title: 'Regla de oro', text: 'Passé Composé = acción puntual con inicio y fin. Imparfait = contexto, hábito, descripción.' },
+      { title: 'Concordancia', text: 'El Estilo Indirecto en pasado mantiene la concordancia de tiempos del verbo reportado.' },
+      { title: 'Formal vs oral', text: 'La Voz Pasiva en pasado suena muy formal. Úsala en writing académico o profesional.' },
+    ],
+  },
+  b1: {
+    title: 'Futuro e Hipótesis',
+    subtitle: 'Las 5 versiones de cada frase',
+    intro: 'El nivel B1 introduce planes, deseos e hipótesis. Hablarás de lo que será, lo que quisieras y lo que pasaría si...',
+    accent: '#8b5cf6',
+    accentLight: '#ede9fe',
+    structures: [
+      {
+        name: 'Versión Base',
+        tag: 'BASE',
+        tagColor: '#4338ca',
+        tagBg: '#eef2ff',
+        what: 'Planes y predicciones. Combinación de Futur Simple (formal) y Futur Proche (cotidiano).',
+        how: 'Futur Simple: infinitivo + -ai, -as, -a, -ons, -ez, -ont.\nJe parlerai. Il viendra.\n\nFutur Proche: aller (conj.) + infinitivo.\nJe vais parler.\n\nIrregulares: être → serai, faire → ferai, aller → irai.',
+        example: { fr: 'Demain matin, je prendrai une douche rapide et je vais me préparer.', es: 'Mañana tomaré una ducha rápida y voy a prepararme.' },
+        tip: 'En conversación, el Futur Proche es más natural. El Simple se usa en writing y promesas.',
+      },
+      {
+        name: 'Real Talk',
+        tag: 'REAL TALK',
+        tagColor: '#b45309',
+        tagBg: '#fef3c7',
+        what: 'Planes y deseos en el futuro como los hablan los nativos. Más directo.',
+        how: 'Expresiones coloquiales:\n• "Je vais fissa" → "Voy ya"\n• "Je compte bien" → "Tengo pensado"\n• "C\'est sûr que" → "Seguro que"\n• "Squatter un truc" → "Quedarse en un sitio"',
+        example: { fr: 'Demain, je vais me faire une douche express et je vais squatter la salle de bain fissa.', es: 'Mañana me haré una ducha exprés y voy a ocupar el baño de volada.' },
+        tip: '"Fissa" = rápido. "Squatter" = okupar, pero se usa para "quedarse en un lugar".',
+      },
+      {
+        name: 'Estilo Indirecto',
+        tag: 'INDIRECTO',
+        tagColor: '#0369a1',
+        tagBg: '#e0f2fe',
+        what: 'Reportar en el futuro lo que alguien dijo. El verbo reportado va en condicional.',
+        how: 'Il a dit que + conditionnel présent.\n\nJe parlerais. Il viendrait.\n\nCon Futur Proche: "Il a dit qu\'il allait venir."\n\nEl condicional se forma:\nraíz futur + endings imparfait.',
+        example: { fr: 'Il a dit qu\'il prendra une douche et qu\'il se préparera.', es: 'Él dijo que tomará una ducha y que se preparará.' },
+        tip: '"Que" se contrae a "qu\'" antes de il/elle: "Il a dit qu\'il viendrait".',
+      },
+      {
+        name: 'Indirecto + Énfasis',
+        tag: 'ÉNFASIS',
+        tagColor: '#be185d',
+        tagBg: '#fdf2f8',
+        what: 'Igual que el indirecto, pero destacando quién realizará la acción futura.',
+        how: 'Il a dit que c\'est + SUJETO + qui/que + condicional.\n\nC\'est moi qui prendrai la douche.\n\nEl condicional concuerda con el sujeto enfatizado.',
+        example: { fr: 'Il a dit que c\'est lui qui prendra la douche le premier.', es: 'Él dijo que es él quien tomará la ducha primero.' },
+        tip: 'La estructura c\'est... qui funciona igual en todos los tiempos.',
+      },
+      {
+        name: 'Hipótesis / Condicional',
+        tag: 'HIPÓTESIS',
+        tagColor: '#c2410c',
+        tagBg: '#fff7ed',
+        what: 'Situaciones irreales, deseos y "qué pasaría si...". La estructura más expresiva del B1.',
+        how: 'Si + imparfait → conditionnel présent.\nSi j\'avais le temps, je voyagerais.\n\nSi + plus-que-parfait → conditionnel passé.\nSi j\'avais su, je serais venu.\n\nNUNCA: Si + futuro o condicional.',
+        example: { fr: 'Si j\'avais plus de temps, je prendrais un bain relaxant.', es: 'Si tuviera más tiempo, tomaría un baño relajante.' },
+        tip: 'Error común: "Si j\'aurais" → INCORRECTO. Siempre imparfait después de "si".',
+      },
+    ],
+    tips: [
+      { title: 'Futur Simple vs Proche', text: 'Significan lo mismo. El Proche es oral, el Simple es escrito y más formal.' },
+      { title: 'Condicional múltiple', text: 'No es solo hipótesis: también sirve para cortesía ("Je voudrais un café").' },
+      { title: 'Regla absoluta', text: 'Después de "si" NUNCA va futuro ni condicional. Siempre imparfait o plus-que-parfait.' },
+    ],
+  },
+};
+
+const data = grammar[level];
+---
+
+<section class="grammar">
+  <div class="grammar-badge">
+    <span class="badge-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+    </span>
+    <span class="badge-text">Gramática del nivel</span>
+  </div>
+
+  <h2 class="grammar-title">{data.title}</h2>
+  <p class="grammar-intro">{data.intro}</p>
+
+  <div class="structures-grid">
+    {data.structures.map((s, i) => (
+      <div class="struct-card" style={`--card-accent: ${s.tagColor}; --card-bg: ${s.tagBg};`}>
+        <div class="struct-header">
+          <span class="struct-number" style={`color: ${s.tagColor};`}>{String(i + 1).padStart(2, '0')}</span>
+          <div class="struct-meta">
+            <span class="struct-tag" style={`color: ${s.tagColor}; background: ${s.tagBg};`}>{s.tag}</span>
+            <h3 class="struct-name">{s.name}</h3>
+          </div>
+        </div>
+        <div class="struct-body">
+          <p class="struct-what">{s.what}</p>
+          <div class="struct-how">
+            <span class="struct-label">CÓMO SE FORMA</span>
+            <p class="struct-how-text">{s.how}</p>
+          </div>
+          <div class="struct-example">
+            <span class="struct-label">EJEMPLO</span>
+            <p class="ex-fr">{s.example.fr}</p>
+            <p class="ex-es">{s.example.es}</p>
+          </div>
+          <div class="struct-tip">
+            <span class="tip-icon">💡</span>
+            <span>{s.tip}</span>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <div class="tips-section">
+    <h3 class="tips-heading">Consejos clave</h3>
+    <div class="tips-list">
+      {data.tips.map((tip) => (
+        <div class="tip-card">
+          <span class="tip-dot" style={`background: ${data.accent};`}></span>
+          <div>
+            <strong class="tip-title">{tip.title}</strong>
+            <span class="tip-text">{tip.text}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .grammar {
+    margin-bottom: 48px;
+    padding: 32px;
+    background: var(--bg-card);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+
+  .grammar-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: var(--accent);
+    color: white;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+  .badge-icon { display: flex; }
+  .badge-text {
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .grammar-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.4rem;
+    font-weight: 400;
+    color: var(--text);
+    margin: 0 0 10px;
+    line-height: 1.2;
+  }
+  .grammar-intro {
+    font-size: 1.15rem;
+    color: var(--text-secondary);
+    margin: 0 0 32px;
+    line-height: 1.6;
+    max-width: 600px;
+  }
+
+  .structures-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .struct-card {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .struct-card:hover {
+    border-color: var(--card-accent);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  .struct-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border);
+  }
+  .struct-number {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.8rem;
+    font-weight: 400;
+    line-height: 1;
+    opacity: 0.6;
+  }
+  .struct-meta { display: grid; gap: 2px; }
+  .struct-tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 2px 8px;
+    border-radius: 4px;
+    width: fit-content;
+  }
+  .struct-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.35rem;
+    font-weight: 400;
+    color: var(--text);
+    margin: 0;
+  }
+
+  .struct-body {
+    padding: 20px;
+    display: grid;
+    gap: 16px;
+  }
+  .struct-what {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.55;
+  }
+  .struct-label {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .struct-how {
+    padding: 14px;
+    background: #fafafa;
+    border-radius: 8px;
+    border: 1px solid var(--border-light);
+  }
+  .struct-how-text {
+    font-size: 0.98rem;
+    color: var(--text);
+    line-height: 1.7;
+    margin: 0;
+    white-space: pre-line;
+    font-family: 'Georgia', serif;
+    font-style: italic;
+  }
+
+  .struct-example {
+    padding: 14px;
+    background: #f0fdf4;
+    border-radius: 8px;
+    border-left: 3px solid #2d9f6f;
+  }
+  .ex-fr {
+    font-style: italic;
+    font-size: 1.05rem;
+    color: #166534;
+    margin: 0 0 4px;
+    line-height: 1.5;
+  }
+  .ex-es {
+    font-size: 0.98rem;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
+  .struct-tip {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px;
+    background: #fffbeb;
+    border-radius: 8px;
+    font-size: 0.98rem;
+    color: #92400e;
+    line-height: 1.5;
+  }
+  .tip-icon { flex-shrink: 0; font-size: 0.9rem; }
+
+  .tips-section {
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .tips-heading {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: var(--text);
+    margin: 0 0 16px;
+  }
+  .tips-list {
+    display: grid;
+    gap: 10px;
+  }
+  .tip-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid var(--border-light);
+  }
+  .tip-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 6px;
+  }
+  .tip-title {
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: var(--text);
+    display: block;
+    margin-bottom: 2px;
+  }
+  .tip-text {
+    font-size: 0.98rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 768px) {
+    .grammar { padding: 20px; }
+    .grammar-title { font-size: 1.6rem; }
+    .structures-grid { grid-template-columns: 1fr; }
+  }
+</style>

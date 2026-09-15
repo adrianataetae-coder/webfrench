@@ -1,0 +1,87 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import { LEVELS } from '../../types';
+import type { Level } from '../../types';
+
+export function getStaticPaths() {
+  return LEVELS.map(level => ({
+    params: { level: level.id },
+  }));
+}
+
+const { level } = Astro.params;
+const levelInfo = LEVELS.find(l => l.id === level)!;
+---
+
+<MainLayout title={`Lecciones ${levelInfo.name}`} level={level as Level}>
+  <PageHeader title={`Lecciones ${levelInfo.name}`} description="Elige una lección para empezar" color={levelInfo.color} />
+
+  <div class="lessons-grid">
+    {levelInfo.lessons.map((lesson, i) => (
+      <a href={`/${level}/${lesson.slug}`} class="lesson-card" style={`--lv: ${levelInfo.color};`}>
+        <div class="lesson-num">{String(i + 1).padStart(2, '0')}</div>
+        <div class="lesson-body">
+          <h3 class="lesson-title">{lesson.title}</h3>
+          <p class="lesson-theme">{lesson.theme}</p>
+        </div>
+        <svg class="lesson-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 10h10M11 6l4 4-4 4"/></svg>
+      </a>
+    ))}
+  </div>
+</MainLayout>
+
+<style>
+  .lessons-grid {
+    display: grid;
+    gap: 12px;
+  }
+  .lesson-card {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 20px 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s;
+  }
+  .lesson-card:hover {
+    border-color: var(--lv);
+    box-shadow: var(--shadow);
+    transform: translateX(4px);
+  }
+  .lesson-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: var(--border);
+    width: 56px;
+    text-align: center;
+    flex-shrink: 0;
+    transition: color 0.2s;
+  }
+  .lesson-card:hover .lesson-num { color: var(--lv); }
+  .lesson-body { flex: 1; }
+  .lesson-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin: 0 0 4px;
+    color: var(--text);
+  }
+  .lesson-theme {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin: 0;
+  }
+  .lesson-arrow {
+    color: var(--border);
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .lesson-card:hover .lesson-arrow {
+    color: var(--lv);
+    transform: translateX(3px);
+  }
+</style>

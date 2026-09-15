@@ -1,0 +1,214 @@
+---
+import type { Level } from '../types';
+import { LEVELS } from '../types';
+
+interface Props {
+  currentLevel?: Level;
+  currentLesson?: string;
+}
+
+const { currentLevel, currentLesson } = Astro.props;
+---
+
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <a href="/" class="logo">
+      <span class="logo-mark">FF</span>
+      <span class="logo-name">FrenchFlow</span>
+    </a>
+  </div>
+
+  <nav class="sidebar-nav">
+    {LEVELS.map(level => (
+      <div class={`nav-group ${currentLevel === level.id ? 'nav-group--open' : ''}`}>
+        <a
+          href={`/${level.id}`}
+          class="nav-group-title"
+          style={`--lv: ${level.color};`}
+        >
+          <span class="nav-dot" style={`background:${level.color};`}></span>
+          <span class="nav-label">{level.name}</span>
+          <svg class="nav-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4"/></svg>
+        </a>
+        <ul class="nav-list">
+          {level.lessons.map(lesson => (
+            <li>
+              <a
+                href={`/${level.id}/${lesson.slug}`}
+                class={`nav-item ${currentLesson === lesson.slug ? 'nav-item--active' : ''}`}
+              >
+                {lesson.title}
+              </a>
+            </li>
+          ))}
+          <li>
+            <a
+              href={`/${level.id}/examen`}
+              class={`nav-item nav-item--exam ${currentLesson === 'examen' ? 'nav-item--active' : ''}`}
+            >
+              📝 Examen
+            </a>
+          </li>
+        </ul>
+      </div>
+    ))}
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="footer-badge">A1 → B1</div>
+  </div>
+</aside>
+
+<style>
+  .sidebar {
+    width: 240px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: #16162a;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+  .sidebar-header {
+    padding: 24px 22px 20px;
+    flex-shrink: 0;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+  }
+  .logo-mark {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 800;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+  .logo-name {
+    font-family: 'DM Serif Display', serif;
+    color: #fff;
+    font-size: 1.3rem;
+    letter-spacing: -0.01em;
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    padding: 8px 12px;
+    overflow-y: auto;
+  }
+
+  .nav-group {
+    margin-bottom: 4px;
+  }
+  .nav-group-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 12px;
+    border-radius: 10px;
+    color: #a0a0c0;
+    text-decoration: none;
+    font-size: 1.02rem;
+    font-weight: 600;
+    transition: all 0.15s;
+    cursor: pointer;
+  }
+  .nav-group-title:hover {
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+  }
+  .nav-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    opacity: 0.7;
+  }
+  .nav-group--open .nav-dot { opacity: 1; }
+  .nav-label { flex: 1; }
+  .nav-chevron {
+    color: #606080;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .nav-group--open .nav-chevron {
+    transform: rotate(90deg);
+  }
+
+  .nav-list {
+    list-style: none;
+    padding: 2px 0 6px 20px;
+    display: none;
+  }
+  .nav-group--open .nav-list { display: block; }
+  .nav-item {
+    display: block;
+    padding: 8px 14px;
+    color: #8080a0;
+    text-decoration: none;
+    font-size: 0.98rem;
+    border-radius: 8px;
+    transition: all 0.12s;
+    margin-bottom: 1px;
+  }
+  .nav-item:hover {
+    background: rgba(255,255,255,0.05);
+    color: #d0d0e8;
+  }
+  .nav-item--active {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    font-weight: 600;
+  }
+  .nav-item--exam {
+    margin-top: 6px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding-top: 12px;
+    font-weight: 600;
+    color: #b0b0d0;
+  }
+  .nav-item--exam:hover {
+    color: #fff;
+  }
+
+  .sidebar-footer {
+    padding: 16px 22px;
+    flex-shrink: 0;
+  }
+  .footer-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 12px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 20px;
+    color: #7070a0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+  }
+
+  @media (max-width: 900px) {
+    .sidebar {
+      width: 280px;
+      left: -290px;
+      transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .sidebar.open { left: 0; }
+  }
+</style>

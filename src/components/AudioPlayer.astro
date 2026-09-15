@@ -1,0 +1,121 @@
+---
+interface Props {
+  src: string;
+  label?: string;
+  size?: 'sm' | 'md';
+}
+
+const { src, label, size = 'md' } = Astro.props;
+---
+
+<button
+  class={`play-btn play-btn--${size}`}
+  data-audio-src={src}
+  title={label || 'Escuchar'}
+  aria-label={label || 'Escuchar'}
+>
+  <svg class="play-icon" width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+    <path d="M3 1.5v11l9-5.5z"/>
+  </svg>
+  <svg class="pause-icon" width="14" height="14" viewBox="0 0 14 14" fill="currentColor" style="display:none">
+    <rect x="3" y="2" width="3" height="10" rx="0.5"/>
+    <rect x="8" y="2" width="3" height="10" rx="0.5"/>
+  </svg>
+  {label && <span class="play-label">{label}</span>}
+</button>
+
+<style>
+  .play-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: all 0.15s;
+    border-radius: 8px;
+    background: var(--accent, #667eea);
+    color: white;
+    flex-shrink: 0;
+  }
+  .play-btn:hover {
+    filter: brightness(1.1);
+    transform: scale(1.04);
+  }
+  .play-btn:active {
+    transform: scale(0.97);
+  }
+  .play-btn--sm {
+    padding: 5px 10px;
+    font-size: 0.75rem;
+    border-radius: 6px;
+    gap: 4px;
+  }
+  .play-btn--md {
+    padding: 7px 14px;
+    font-size: 0.85rem;
+  }
+  .play-icon, .pause-icon {
+    flex-shrink: 0;
+  }
+  .play-label {
+    line-height: 1;
+  }
+</style>
+
+<script>
+  let currentAudio: HTMLAudioElement | null = null;
+  let currentBtn: HTMLElement | null = null;
+
+  function stopCurrent() {
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio = null;
+    }
+    if (currentBtn) {
+      currentBtn.classList.remove('playing');
+      currentBtn.querySelector('.play-icon')?.setAttribute('style', 'display:inline');
+      currentBtn.querySelector('.pause-icon')?.setAttribute('style', 'display:none');
+      currentBtn = null;
+    }
+  }
+
+  function initPlayButtons() {
+    document.querySelectorAll<HTMLButtonElement>('.play-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const src = btn.dataset.audioSrc;
+        if (!src) return;
+
+        if (currentBtn === btn) {
+          stopCurrent();
+          return;
+        }
+
+        stopCurrent();
+
+        const audio = new Audio(src);
+        audio.play().catch(() => {});
+        audio.addEventListener('ended', () => {
+          btn.classList.remove('playing');
+          btn.querySelector('.play-icon')?.setAttribute('style', 'display:inline');
+          btn.querySelector('.pause-icon')?.setAttribute('style', 'display:none');
+          if (currentAudio === audio) {
+            currentAudio = null;
+            currentBtn = null;
+          }
+        });
+
+        currentAudio = audio;
+        currentBtn = btn;
+        btn.classList.add('playing');
+        btn.querySelector('.play-icon')?.setAttribute('style', 'display:none');
+        btn.querySelector('.pause-icon')?.setAttribute('style', 'display:inline');
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', initPlayButtons);
+  initPlayButtons();
+</script>

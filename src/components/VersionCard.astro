@@ -1,0 +1,335 @@
+---
+import AudioPlayer from './AudioPlayer.astro';
+import type { Version } from '../types';
+
+interface Props {
+  version: Version;
+  audioBase: string;
+  phraseNum: number;
+  level: string;
+  isOpen?: boolean;
+}
+
+const { version, audioBase, phraseNum, level, isOpen = false } = Astro.props;
+
+const audioSrc = `${audioBase}/frase${phraseNum}_${version.name}.mp3`;
+
+const tagColors: Record<string, { bg: string; text: string }> = {
+  base: { bg: '#eef2ff', text: '#4338ca' },
+  realTalk: { bg: '#fffbeb', text: '#b45309' },
+  indirecto: { bg: '#f0f9ff', text: '#0369a1' },
+  indirectoEnfasis: { bg: '#fdf2f8', text: '#be185d' },
+  vozPasiva: { bg: '#f0fdfa', text: '#0d9488' },
+  hipotesis: { bg: '#fff7ed', text: '#c2410c' },
+};
+
+const tag = tagColors[version.name] || tagColors.base;
+
+function splitFrEs(text: string): { fr: string; es: string } {
+  const parenMatch = text.match(/^(.+?)\s*\((.+?)\)\s*$/);
+  if (parenMatch) {
+    return { fr: parenMatch[1].trim(), es: parenMatch[2].trim() };
+  }
+  const questionMatch = text.match(/^(.+?\?)\s*\((.+?)\)\s*$/);
+  if (questionMatch) {
+    return { fr: questionMatch[1].trim(), es: questionMatch[2].trim() };
+  }
+  return { fr: text, es: '' };
+}
+
+const qParts = splitFrEs(version.question);
+const sParts = splitFrEs(version.substitution);
+---
+
+<div class={`version ${isOpen ? 'version--open' : ''}`} data-version={version.name} data-open={isOpen ? 'true' : 'false'}>
+  <div class="version-trigger-wrap">
+    <button class="version-trigger" aria-expanded={isOpen ? 'true' : 'false'}>
+      <span class="version-tag" style={`background:${tag.bg}; color:${tag.text};`}>
+        {version.label}
+      </span>
+      <span class="version-french">{version.french}</span>
+      <span class="version-audio-inline">
+        <AudioPlayer src={audioSrc} label="Audio" size="sm" />
+      </span>
+      <span class="version-toggle">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 5l4 4 4-4"/></svg>
+      </span>
+    </button>
+    <button class="copy-btn copy-btn--trigger" data-copy={version.french} title="Copiar frase">
+      <svg class="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+      <svg class="check-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+    </button>
+  </div>
+
+  <div class="version-panel">
+    <div class="version-grid">
+      <div class="field">
+        <div class="field-header">
+          <span class="field-label">Traducción</span>
+          <button class="copy-btn" data-copy={version.translation} title="Copiar">
+            <svg class="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <svg class="check-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+          </button>
+        </div>
+        <span class="field-value">{version.translation}</span>
+      </div>
+      <div class="field">
+        <div class="field-header">
+          <span class="field-label">Pronunciación</span>
+          <button class="copy-btn" data-copy={version.pronunciation} title="Copiar">
+            <svg class="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <svg class="check-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+          </button>
+        </div>
+        <span class="field-value field-value--phonetic">{version.pronunciation}</span>
+      </div>
+      <div class="field">
+        <div class="field-header">
+          <span class="field-label">Pregunta</span>
+          <button class="copy-btn" data-copy={version.question} title="Copiar">
+            <svg class="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <svg class="check-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+          </button>
+        </div>
+        <span class="field-value field-value--question">
+          <span class="fr-text">{qParts.fr}</span>
+          {qParts.es && <span class="es-text"> ({qParts.es})</span>}
+        </span>
+        {version.questionPronunciation && (
+          <span class="field-value field-value--phonetic">{version.questionPronunciation}</span>
+        )}
+      </div>
+      <div class="field">
+        <div class="field-header">
+          <span class="field-label">Sustitución</span>
+          <button class="copy-btn" data-copy={version.substitution} title="Copiar">
+            <svg class="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <svg class="check-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+          </button>
+        </div>
+        <span class="field-value field-value--green">
+          <span class="fr-text">{sParts.fr}</span>
+          {sParts.es && <span class="es-text"> ({sParts.es})</span>}
+        </span>
+        {version.substitutionPronunciation && (
+          <span class="field-value field-value--phonetic">{version.substitutionPronunciation}</span>
+        )}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .version {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+  .version:hover {
+    border-color: #d0d0e0;
+  }
+  .version--open {
+    border-color: #c7d2fe;
+    background: #fafaff;
+  }
+  .version-trigger-wrap {
+    position: relative;
+  }
+  .version-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 14px;
+    background: white;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
+    transition: background 0.12s;
+    min-height: 48px;
+    overflow: hidden;
+  }
+  .version--open .version-trigger {
+    background: #f5f3ff;
+  }
+  .version-trigger:hover {
+    background: #fafafa;
+  }
+  .version--open .version-trigger:hover {
+    background: #ede9fe;
+  }
+  .version-tag {
+    display: inline-flex;
+    padding: 4px 12px;
+    border-radius: 5px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .version-french {
+    flex: 1;
+    min-width: 0;
+    font-style: italic;
+    font-size: 1.18rem;
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .version-audio-inline {
+    flex-shrink: 0;
+    margin-left: auto;
+  }
+  .version-toggle {
+    color: var(--text-muted);
+    flex-shrink: 0;
+    transition: transform 0.2s;
+    display: flex;
+    align-items: center;
+  }
+  .version[data-open="true"] .version-toggle {
+    transform: rotate(180deg);
+  }
+
+  .version-panel {
+    display: none;
+    padding: 0 16px 16px;
+    background: #fdfdfd;
+    border-top: 1px solid var(--border-light);
+  }
+  .version[data-open="true"] .version-panel {
+    display: block;
+  }
+  .version-grid {
+    display: grid;
+    gap: 12px;
+    padding-top: 14px;
+  }
+  .field {
+    display: grid;
+    gap: 3px;
+  }
+  .field-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .field-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+  }
+  .copy-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: all 0.15s;
+    flex-shrink: 0;
+    padding: 0;
+  }
+  .copy-btn:hover {
+    background: var(--border-light);
+    color: var(--text);
+  }
+  .copy-btn .check-icon {
+    display: none;
+  }
+  .copy-btn.copied .copy-icon {
+    display: none;
+  }
+  .copy-btn.copied .check-icon {
+    display: block;
+    color: #16a34a;
+  }
+  .copy-btn--trigger {
+    position: absolute;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity 0.15s;
+    background: white;
+    border: 1px solid var(--border);
+  }
+  .version-trigger-wrap:hover .copy-btn--trigger {
+    opacity: 1;
+  }
+  .copy-btn--trigger:hover {
+    background: var(--border-light);
+  }
+  .field-value {
+    font-size: 1.15rem;
+    color: var(--text);
+    line-height: 1.65;
+  }
+  .field-value--question {
+    color: #4338ca;
+  }
+  .field-value--phonetic {
+    font-style: italic;
+    color: var(--purple);
+    font-family: 'Georgia', serif;
+    font-size: 1.1rem;
+  }
+  .field-value--green {
+    color: var(--green-dark);
+  }
+  .fr-text { font-style: italic; }
+  .es-text { font-style: normal; color: var(--text-secondary); }
+</style>
+
+<script>
+  function initVersions() {
+    document.querySelectorAll<HTMLElement>('.version').forEach(el => {
+      const trigger = el.querySelector('.version-trigger');
+      trigger?.addEventListener('click', (e) => {
+        if ((e.target as HTMLElement).closest('.play-btn')) return;
+        if ((e.target as HTMLElement).closest('.copy-btn')) return;
+        const isOpen = el.getAttribute('data-open') === 'true';
+        el.setAttribute('data-open', isOpen ? 'false' : 'true');
+        trigger.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+      });
+    });
+
+    document.querySelectorAll<HTMLButtonElement>('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const text = btn.getAttribute('data-copy');
+        if (!text) return;
+        try {
+          await navigator.clipboard.writeText(text);
+          btn.classList.add('copied');
+          setTimeout(() => btn.classList.remove('copied'), 1500);
+        } catch {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          btn.classList.add('copied');
+          setTimeout(() => btn.classList.remove('copied'), 1500);
+        }
+      });
+    });
+  }
+  document.addEventListener('astro:page-load', initVersions);
+  initVersions();
+</script>

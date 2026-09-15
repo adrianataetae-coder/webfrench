@@ -1,0 +1,77 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import ExamSection from '../../components/ExamSection.astro';
+import { loadExam } from '../../data/examParser';
+import { LEVELS } from '../../types';
+import type { Level } from '../../types';
+
+export function getStaticPaths() {
+  return LEVELS.map(level => ({
+    params: { level: level.id }
+  }));
+}
+
+const { level } = Astro.params;
+const levelInfo = LEVELS.find(l => l.id === level)!;
+const exam = loadExam(level as string);
+
+if (!exam) {
+  return Astro.redirect(`/${level}`);
+}
+---
+
+<MainLayout
+  title={`Examen ${levelInfo.name}`}
+  level={level as Level}
+>
+  <div class="lesson" style={`--lv: ${levelInfo.color};`}>
+    <PageHeader
+      title={exam.title}
+      description={`Examen final · ${levelInfo.name}`}
+      color={levelInfo.color}
+    />
+
+    <div class="exam-intro">
+      <div class="exam-badge">📝 Examen Final</div>
+      <p>Escribe tus respuestas directamente. Usa el botón <strong>Comprobar</strong> para ver cuántas has completado.</p>
+    </div>
+
+    {exam.sections.map((section, i) => (
+      <div style={`--lv: ${levelInfo.color};`}>
+        <ExamSection
+          title={section.title}
+          instructions={section.instructions}
+          questions={section.questions}
+          sectionIndex={i}
+        />
+      </div>
+    ))}
+  </div>
+</MainLayout>
+
+<style>
+  .exam-intro {
+    text-align: center;
+    padding: 12px 24px 36px;
+    color: var(--text-secondary, #64748b);
+    font-size: 1.12rem;
+    line-height: 1.6;
+  }
+  .exam-intro strong {
+    color: var(--text);
+  }
+  .exam-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 14px;
+  }
+</style>

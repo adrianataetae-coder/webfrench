@@ -1,0 +1,132 @@
+---
+import type { VerbEntry } from '../data/verbs';
+
+interface Props {
+  verbs: VerbEntry[];
+}
+
+const { verbs } = Astro.props;
+---
+
+<section class="verb-section">
+  <div class="verb-badge">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+    <span>Verbos de la lección</span>
+  </div>
+
+  <div class="verbs-grid">
+    {verbs.map(v => (
+      <div class="verb-card">
+        <div class="verb-header">
+          <span class="verb-name">{v.verb}</span>
+          <span class="verb-trans">{v.translation}</span>
+        </div>
+        <div class="verb-table">
+          <div class="verb-row">
+            <span class="verb-pronoun">je</span>
+            <span class="verb-form">{v.forms[0]}</span>
+          </div>
+          <div class="verb-row">
+            <span class="verb-pronoun">tu</span>
+            <span class="verb-form">{v.forms[1]}</span>
+          </div>
+          <div class="verb-row">
+            <span class="verb-pronoun">il / elle</span>
+            <span class="verb-form">{v.forms[2]} <span class="fem">/ {v.femForms ? v.femForms[2] : v.forms[2]}</span></span>
+          </div>
+          <div class="verb-row">
+            <span class="verb-pronoun">nous</span>
+            <span class="verb-form">{v.forms[3]}</span>
+          </div>
+          <div class="verb-row">
+            <span class="verb-pronoun">vous</span>
+            <span class="verb-form">{v.forms[4]}</span>
+          </div>
+          <div class="verb-row">
+            <span class="verb-pronoun">ils / elles</span>
+            <span class="verb-form">{v.forms[5]} <span class="fem">/ {v.femForms ? v.femForms[5] : v.forms[5]}</span></span>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .verb-section {
+    margin-bottom: 32px;
+    padding: 24px;
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+  }
+  .verb-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 20px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 18px;
+  }
+  .verbs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 14px;
+  }
+  .verb-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .verb-header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .verb-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.25rem;
+    color: var(--text);
+  }
+  .verb-trans {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+  }
+  .verb-table {
+    padding: 4px 0;
+  }
+  .verb-row {
+    display: flex;
+    align-items: center;
+    padding: 7px 16px;
+    gap: 12px;
+    transition: background 0.1s;
+  }
+  .verb-row:hover {
+    background: #fafaff;
+  }
+  .verb-pronoun {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    width: 70px;
+    flex-shrink: 0;
+  }
+  .verb-form {
+    font-style: italic;
+    font-size: 1.08rem;
+    color: var(--text);
+  }
+  .fem {
+    color: #be185d;
+  }
+</style>

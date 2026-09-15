@@ -1,0 +1,176 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import { LEVELS } from '../types';
+---
+
+<MainLayout title="Aprende Francés de A1 a B1">
+  <div class="home">
+    <div class="hero">
+      <div class="hero-badge">App de francés</div>
+      <h1 class="hero-title">
+        Aprende francés<br>
+        <span class="hero-highlight">con conversaciones reales</span>
+      </h1>
+      <p class="hero-desc">
+        Frases del día a día con pronunciación, traducción y diferentes registros.
+        Desde lo básico hasta la fluidez.
+      </p>
+    </div>
+
+    <div class="levels">
+      {LEVELS.map((level, i) => (
+        <a href={`/${level.id}`} class="level-card" style={`--lv: ${level.color}; --lv-light: ${level.color}12; --delay: ${i * 0.05}s;`}>
+          <div class="level-top">
+            <span class="level-tag" style={`background:${level.color};`}>{level.id.toUpperCase()}</span>
+            <span class="level-count">{level.lessons.length} temas</span>
+          </div>
+          <h2 class="level-name">{level.name}</h2>
+          <p class="level-desc">{level.description}</p>
+          <div class="level-themes">
+            {level.lessons.map(l => (
+              <span class="theme-chip">{l.title}</span>
+            ))}
+          </div>
+          <div class="level-cta">
+            <span>Empezar</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</MainLayout>
+
+<style>
+  .home {
+    max-width: 100%;
+  }
+
+  .hero {
+    padding: 16px 0 44px;
+  }
+  .hero-badge {
+    display: inline-flex;
+    padding: 5px 14px;
+    background: linear-gradient(135deg, #667eea20, #764ba220);
+    border: 1px solid #667eea30;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #667eea;
+    margin-bottom: 18px;
+    letter-spacing: 0.02em;
+  }
+  .hero-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--text);
+    margin: 0 0 16px;
+    letter-spacing: -0.02em;
+  }
+  .hero-highlight {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-desc {
+    font-size: 1.08rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 520px;
+  }
+
+  .levels {
+    display: grid;
+    gap: 16px;
+  }
+
+  .level-card {
+    display: block;
+    padding: 26px 28px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  .level-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--lv);
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+  .level-card:hover {
+    border-color: var(--lv);
+    box-shadow: 0 8px 30px -8px var(--lv-light);
+    transform: translateY(-2px);
+  }
+  .level-card:hover::before { opacity: 1; }
+
+  .level-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .level-tag {
+    padding: 3px 10px;
+    border-radius: 6px;
+    color: white;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+  }
+  .level-count {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+  .level-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.55rem;
+    font-weight: 400;
+    margin: 0 0 6px;
+    color: var(--text);
+  }
+  .level-desc {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    margin: 0 0 14px;
+    line-height: 1.6;
+  }
+  .level-themes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .theme-chip {
+    padding: 5px 13px;
+    background: var(--bg);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+  .level-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--lv);
+    transition: gap 0.2s;
+  }
+  .level-card:hover .level-cta { gap: 10px; }
+</style>

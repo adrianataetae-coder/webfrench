@@ -1,0 +1,119 @@
+---
+import VersionCard from './VersionCard.astro';
+import AudioPlayer from './AudioPlayer.astro';
+import type { Phrase } from '../types';
+
+interface Props {
+  phrase: Phrase;
+  audioBase: string;
+  level: string;
+  blockIndex: number;
+}
+
+const { phrase, audioBase, level, blockIndex } = Astro.props;
+const baseVersion = phrase.versions.find(v => v.name === 'base');
+const otherVersions = phrase.versions.filter(v => v.name !== 'base');
+---
+
+<article class="phrase">
+  <div class="phrase-head">
+    <span class="phrase-num">{phrase.id}</span>
+    <div class="phrase-meta">
+      <h4 class="phrase-title">{phrase.title}</h4>
+      {phrase.context && <span class="phrase-ctx">{phrase.context}</span>}
+    </div>
+  </div>
+
+  {baseVersion && (
+    <div class="phrase-accordion">
+      <VersionCard
+        version={baseVersion}
+        audioBase={audioBase}
+        phraseNum={phrase.id}
+        level={level}
+        isOpen={true}
+      />
+    </div>
+  )}
+
+  <div class="phrase-accordion">
+    {otherVersions.map(version => (
+      <VersionCard
+        version={version}
+        audioBase={audioBase}
+        phraseNum={phrase.id}
+        level={level}
+      />
+    ))}
+  </div>
+</article>
+
+<style>
+  .phrase {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .phrase:hover {
+    box-shadow: var(--shadow);
+  }
+
+  .phrase-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 0;
+  }
+  @media (max-width: 600px) {
+    .phrase-head {
+      padding: 16px 16px 0;
+      gap: 12px;
+    }
+  }
+  .phrase-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: var(--lv, #667eea);
+    color: white;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .phrase-meta { flex: 1; }
+  .phrase-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 4px;
+    line-height: 1.35;
+  }
+  .phrase-ctx {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .phrase-accordion {
+    padding: 12px 22px 6px;
+    display: grid;
+    gap: 8px;
+  }
+  .phrase-accordion:last-child {
+    padding-bottom: 18px;
+  }
+  @media (max-width: 600px) {
+    .phrase-accordion {
+      padding: 10px 16px 4px;
+    }
+    .phrase-accordion:last-child {
+      padding-bottom: 14px;
+    }
+  }
+</style>

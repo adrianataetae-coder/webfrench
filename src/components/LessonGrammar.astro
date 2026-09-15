@@ -1,0 +1,106 @@
+---
+import type { GrammarTip } from '../data/grammarByLesson';
+
+interface Props {
+  tips: GrammarTip[];
+}
+
+const { tips } = Astro.props;
+---
+
+<section class="grammar-section">
+  <div class="grammar-badge">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+    <span>Gramática esencial</span>
+  </div>
+
+  <div class="grammar-grid">
+    {tips.map(tip => (
+      <div class="grammar-card">
+        <h3 class="grammar-title">{tip.title}</h3>
+        <div class="grammar-rule">
+          <span class="grammar-label">Regla</span>
+          <p>{tip.rule}</p>
+        </div>
+        <div class="grammar-example">
+          <span class="grammar-label">Ejemplo</span>
+          <p>{tip.example}</p>
+        </div>
+
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .grammar-section {
+    margin-bottom: 32px;
+    padding: 24px;
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+  }
+  .grammar-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    background: #fef3c7;
+    color: #b45309;
+    border-radius: 20px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 18px;
+  }
+  .grammar-grid {
+    display: grid;
+    gap: 14px;
+  }
+  .grammar-card {
+    padding: 18px 20px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: grid;
+    gap: 10px;
+  }
+  .grammar-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--text);
+    margin: 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .grammar-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    margin-bottom: 3px;
+  }
+  .grammar-rule p {
+    font-size: 1.05rem;
+    color: var(--text);
+    margin: 0;
+    line-height: 1.6;
+  }
+  .grammar-example {
+    padding: 10px 14px;
+    background: #f0fdf4;
+    border-radius: 8px;
+    border-left: 3px solid #2d9f6f;
+  }
+  .grammar-example p {
+    font-style: italic;
+    font-size: 1rem;
+    color: #166534;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+</style>
