@@ -1,6 +1,8 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
 import { LEVELS } from '../types';
+
+const base = import.meta.env.BASE_URL;
 ---
 
 <MainLayout title="Aprende Francés de A1 a B1">
@@ -19,7 +21,7 @@ import { LEVELS } from '../types';
 
     <div class="levels">
       {LEVELS.map((level, i) => (
-        <a href={`/${level.id}`} class="level-card" style={`--lv: ${level.color}; --lv-light: ${level.color}12; --delay: ${i * 0.05}s;`}>
+        <a href={`${base}/${level.id}`} class="level-card" style={`--lv: ${level.color}; --lv-light: ${level.color}12; --delay: ${i * 0.05}s;`}>
           <div class="level-top">
             <span class="level-tag" style={`background:${level.color};`}>{level.id.toUpperCase()}</span>
             <span class="level-count">{level.lessons.length} temas</span>

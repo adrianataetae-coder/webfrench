@@ -2,6 +2,8 @@
 import type { Level } from '../types';
 import { LEVELS } from '../types';
 
+const base = import.meta.env.BASE_URL;
+
 interface Props {
   currentLevel?: Level;
   currentLesson?: string;
@@ -12,7 +14,7 @@ const { currentLevel, currentLesson } = Astro.props;
 
 <aside class="sidebar">
   <div class="sidebar-header">
-    <a href="/" class="logo">
+    <a href={`${base}/`} class="logo">
       <span class="logo-mark">FF</span>
       <span class="logo-name">FrenchFlow</span>
     </a>
@@ -22,7 +24,7 @@ const { currentLevel, currentLesson } = Astro.props;
     {LEVELS.map(level => (
       <div class={`nav-group ${currentLevel === level.id ? 'nav-group--open' : ''}`}>
         <a
-          href={`/${level.id}`}
+          href={`${base}/${level.id}`}
           class="nav-group-title"
           style={`--lv: ${level.color};`}
         >
@@ -34,7 +36,7 @@ const { currentLevel, currentLesson } = Astro.props;
           {level.lessons.map(lesson => (
             <li>
               <a
-                href={`/${level.id}/${lesson.slug}`}
+                href={`${base}/${level.id}/${lesson.slug}`}
                 class={`nav-item ${currentLesson === lesson.slug ? 'nav-item--active' : ''}`}
               >
                 {lesson.title}
@@ -43,7 +45,7 @@ const { currentLevel, currentLesson } = Astro.props;
           ))}
           <li>
             <a
-              href={`/${level.id}/examen`}
+              href={`${base}/${level.id}/examen`}
               class={`nav-item nav-item--exam ${currentLesson === 'examen' ? 'nav-item--active' : ''}`}
             >
               📝 Examen

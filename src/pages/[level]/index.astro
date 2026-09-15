@@ -13,6 +13,7 @@ export function getStaticPaths() {
 
 const { level } = Astro.params;
 const levelInfo = LEVELS.find(l => l.id === level)!;
+const base = import.meta.env.BASE_URL;
 ---
 
 <MainLayout title={levelInfo.name} level={level as Level}>
@@ -20,7 +21,7 @@ const levelInfo = LEVELS.find(l => l.id === level)!;
 
   <GrammarIntro level={level as Level} />
 
-  <a href={`/${level}/lecciones`} class="lessons-link" style={`--lv: ${levelInfo.color};`}>
+  <a href={`${base}/${level}/lecciones`} class="lessons-link" style={`--lv: ${levelInfo.color};`}>
     <span class="lessons-link-text">Ver todas las lecciones</span>
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 10h10M11 6l4 4-4 4"/></svg>
   </a>

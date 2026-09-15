@@ -12,6 +12,7 @@ export function getStaticPaths() {
 
 const { level } = Astro.params;
 const levelInfo = LEVELS.find(l => l.id === level)!;
+const base = import.meta.env.BASE_URL;
 ---
 
 <MainLayout title={`Lecciones ${levelInfo.name}`} level={level as Level}>
@@ -19,7 +20,7 @@ const levelInfo = LEVELS.find(l => l.id === level)!;
 
   <div class="lessons-grid">
     {levelInfo.lessons.map((lesson, i) => (
-      <a href={`/${level}/${lesson.slug}`} class="lesson-card" style={`--lv: ${levelInfo.color};`}>
+      <a href={`${base}/${level}/${lesson.slug}`} class="lesson-card" style={`--lv: ${levelInfo.color};`}>
         <div class="lesson-num">{String(i + 1).padStart(2, '0')}</div>
         <div class="lesson-body">
           <h3 class="lesson-title">{lesson.title}</h3>
